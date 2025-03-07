@@ -4,6 +4,27 @@ import { usePathname } from "next/navigation";
 import { ArrowRight, X } from "lucide-react";
 import { motion } from "framer-motion";
 
+const menuVariants = {
+  open: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: "spring",
+      stiffness: 300,
+      damping: 30
+    }
+  },
+  closed: {
+    opacity: 0,
+    y: -20,
+    transition: {
+      type: "spring",
+      stiffness: 300,
+      damping: 30
+    }
+  }
+};
+
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
@@ -43,24 +64,28 @@ const Navbar = () => {
         </Link>
 
         {/* Hamburger Menu for Mobile/Tablets */}
-        <div className="md:hidden">
+        <div className="md:hidden z-[70]">
           <motion.button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="text-white p-2 focus:outline-none"
+            className="relative text-white p-2 focus:outline-none"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
+            aria-label="Toggle menu"
           >
             <motion.div
-              className="w-6 h-0.5 bg-white mb-1"
-              animate={isMenuOpen ? { rotate: 45, y: 2 } : { rotate: 0, y: 0 }}
+              className="w-6 h-0.5 bg-white mb-1.5"
+              animate={isMenuOpen ? { rotate: 45, y: 6 } : { rotate: 0, y: 0 }}
+              transition={{ duration: 0.2 }}
             />
             <motion.div
-              className="w-6 h-0.5 bg-white mb-1"
+              className="w-6 h-0.5 bg-white mb-1.5"
               animate={{ opacity: isMenuOpen ? 0 : 1 }}
+              transition={{ duration: 0.2 }}
             />
             <motion.div
               className="w-6 h-0.5 bg-white"
-              animate={isMenuOpen ? { rotate: -45, y: -2 } : { rotate: 0, y: 0 }}
+              animate={isMenuOpen ? { rotate: -45, y: -6 } : { rotate: 0, y: 0 }}
+              transition={{ duration: 0.2 }}
             />
           </motion.button>
         </div>
@@ -103,9 +128,10 @@ const Navbar = () => {
 
         {/* Mobile Menu */}
         <motion.div
-          className="fixed top-0 left-0 h-[80%] w-full bg-[#03002c]/95 backdrop-blur-md p-6 shadow-lg md:hidden"
+          className="fixed top-0 left-0 h-screen w-full bg-[#03002c]/95 backdrop-blur-md p-6 shadow-lg md:hidden z-[60]"
           initial="closed"
           animate={isMenuOpen ? "open" : "closed"}
+          variants={menuVariants}
         >
           <motion.button
             onClick={() => setIsMenuOpen(false)}
@@ -116,7 +142,7 @@ const Navbar = () => {
             <X className="w-6 h-6" />
           </motion.button>
 
-          <div className="flex flex-col items-start space-y-6 pt-12">
+          <div className="flex flex-col items-center w-full space-y-6 pt-16">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
